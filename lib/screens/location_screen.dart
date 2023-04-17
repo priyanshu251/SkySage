@@ -3,6 +3,7 @@ import 'package:weather/screens/city_screen.dart';
 import '../utilities/constants.dart';
 import '../services/weather.dart';
 import 'package:intl/intl.dart';
+import '../utilities/week_panel.dart';
 
 class LocationScreen extends StatefulWidget {
   LocationScreen(
@@ -13,142 +14,47 @@ class LocationScreen extends StatefulWidget {
   _LocationScreenState createState() => _LocationScreenState();
 }
 
-int index = 8;
-List<String>? list;
-String? backImg;
 WeatherModel weatherModel = WeatherModel();
-int? temperature;
-int? feelsLike;
-int? tem1;
-int? tem2;
-int? tem3;
-int? tem4;
-int? tem5;
-int? feelLike1;
-int? feelLike2;
-int? feelLike3;
-int? feelLike4;
-int? feelLike5;
-String? weatherIcon;
-String? weatherMessage;
-String? country;
-String? cityName;
-String? description;
-String? des1;
-String? des2;
-String? des3;
-String? des4;
-String? des5;
-int? hum1;
-int? hum2;
-int? hum3;
-int? hum4;
-int? hum5;
-int? press1;
-int? press2;
-int? press3;
-int? press4;
-int? press5;
-int? humidity;
-int? pressure;
-String? icon;
-
-String? day;
-
-// var format = DateFormat.yMd('ar');
-// var dateString = format.format(DateTime.now());
+String? backImg;
 
 class _LocationScreenState extends State<LocationScreen> {
   @override
   void initState() {
     super.initState();
-    // print('step 5');
     updateUI(widget.locationWeather, widget.locationForecast);
     backImg = checkTime();
-    list = getWeekDay();
   }
 
   @override
   void deactivate() {
     super.deactivate();
-    // print('step 7');
   }
+
+  DailyWeatherData dailyWeatherData = DailyWeatherData();
+  ForecastWeatherData forecastWeatherData = ForecastWeatherData();
+  ForecastWeatherData forecastWeatherData1 = ForecastWeatherData();
+  ForecastWeatherData forecastWeatherData2 = ForecastWeatherData();
+  ForecastWeatherData forecastWeatherData3 = ForecastWeatherData();
+  ForecastWeatherData forecastWeatherData4 = ForecastWeatherData();
 
   void updateUI(dynamic weatherData, dynamic forecastData) {
     setState(() {
+      //data1 = weatherData;
+      dailyWeatherData.update(weatherData);
       if (weatherData == null) {
-        temperature = 0;
-        weatherIcon = 'error';
-        weatherMessage = 'unable to get weather';
-        cityName = '';
+        dailyWeatherData.temperature = 0;
+        dailyWeatherData.weatherIcon = 'error';
+        cityName = 'unable to get weather';
         return;
       }
-      double temp = weatherData['main']['temp'];
-      temperature = temp.toInt();
-      double fl = weatherData['main']['feels_like'];
-      feelsLike = fl.toInt();
-      weatherMessage = weatherModel.getMessage(temperature!);
-      var condition = weatherData['weather'][0]['id'];
-      weatherIcon = weatherModel.getWeatherIcon(condition);
-      // print(weatherData['weather'][0]['main']);
-      description = weatherData['weather'][0]['description'];
-      humidity = weatherData['main']['humidity'];
-      pressure = weatherData['main']['pressure'];
-      icon = weatherData['weather'][0]['icon'];
-      cityName = weatherData['name'];
-      country = weatherData['sys']['country'];
-      double t1 = forecastData['list'][index]['main']['temp'];
-      tem1 = t1.toInt();
-      double fl1 = forecastData['list'][index]['main']['feels_like'];
-      feelLike1 = fl1.toInt();
-      des1 = forecastData['list'][index]['weather'][0]
-          ['main']; //change des to main
-      hum1 = forecastData['list'][index]['main']['humidity'];
-      press1 = forecastData['list'][index]['main']['pressure'];
-      index = index + 8;
-      double t2 = forecastData['list'][index]['main']['temp'];
-      tem2 = t2.toInt();
-      double fl2 = forecastData['list'][index]['main']['feels_like'];
-      feelLike2 = fl2.toInt();
-      des2 = forecastData['list'][index]['weather'][0]
-          ['main']; //change des to main
-      hum2 = forecastData['list'][index]['main']['humidity'];
-      press2 = forecastData['list'][index]['main']['pressure'];
-      index = index + 8;
-      double t3 = forecastData['list'][index]['main']['temp'];
-      tem3 = t3.toInt();
-      double fl3 = forecastData['list'][index]['main']['feels_like'];
-      feelLike3 = fl3.toInt();
-      des3 = forecastData['list'][index]['weather'][0]
-          ['main']; //change des to main
-      hum3 = forecastData['list'][index]['main']['humidity'];
-      press3 = forecastData['list'][index]['main']['pressure'];
-      index = index + 8;
-      double t4 = forecastData['list'][index]['main']['temp'];
-      tem4 = t4.toInt();
-      double fl4 = forecastData['list'][index]['main']['feels_like'];
-      feelLike4 = fl4.toInt();
-      des4 = forecastData['list'][index]['weather'][0]
-          ['main']; //change des to main
-      hum4 = forecastData['list'][index]['main']['humidity'];
-      press4 = forecastData['list'][index]['main']['pressure'];
-      index = index + 7;
-      double t5 = forecastData['list'][index]['main']['temp'];
-      tem5 = t5.toInt();
-      double fl5 = forecastData['list'][index]['main']['feels_like'];
-      feelLike5 = fl5.toInt();
-      des5 = forecastData['list'][index]['weather'][0]
-          ['main']; //change des to main
-      hum5 = forecastData['list'][index]['main']['humidity'];
-      press5 = forecastData['list'][index]['main']['pressure'];
+      //data2 = forecastData;
+      forecastWeatherData.update(forecastData: forecastData, index: 8);
+      forecastWeatherData1.update(forecastData: forecastData, index: 16);
+      forecastWeatherData2.update(forecastData: forecastData, index: 24);
+      forecastWeatherData3.update(forecastData: forecastData, index: 32);
+      forecastWeatherData4.update(forecastData: forecastData, index: 39);
     });
   }
-
-  // String dateAndTime() {
-  //   var format = DateFormat.yMd('ar');
-  //   var dateString = format.format(DateTime.now());
-  //   return dateString;
-  // }
 
   String? checkTime() {
     String dt0 = DateFormat.Hm().format(DateTime.now());
@@ -176,8 +82,8 @@ class _LocationScreenState extends State<LocationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // print('step 6');
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -235,7 +141,7 @@ class _LocationScreenState extends State<LocationScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        '$country | $cityName',
+                        '${dailyWeatherData.country} | ${dailyWeatherData.cityName}',
                         style: const TextStyle(
                           fontSize: 20.0,
                         ),
@@ -248,21 +154,18 @@ class _LocationScreenState extends State<LocationScreen> {
                             Column(
                               children: [
                                 Text(
-                                  '$temperature°',
+                                  '${dailyWeatherData.temperature}°',
                                   style: kTempTextStyle,
                                 ),
                                 Center(
                                   child: Text(
-                                    '$description\nhumidity: $humidity\npressure: $pressure',
-                                    // style: TextStyle(
-                                    //   fontSize: 20,
-                                    // ),
+                                    '${dailyWeatherData.description}\nhumidity: ${dailyWeatherData.humidity}\npressure: ${dailyWeatherData.pressure}',
                                   ),
                                 ),
                               ],
                             ),
                             Text(
-                              '$weatherIcon',
+                              '${dailyWeatherData.weatherIcon}',
                               style: kConditionTextStyle,
                             ),
                           ],
@@ -276,56 +179,52 @@ class _LocationScreenState extends State<LocationScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   WeekPanel(
-                    tem: tem1,
-                    press: press1,
-                    des: des1,
-                    hum: hum1,
-                    feelsLike: feelLike1,
+                    tem: forecastWeatherData.tem,
+                    press: forecastWeatherData.press,
+                    des: forecastWeatherData.des,
+                    hum: forecastWeatherData.hum,
+                    feelsLike: forecastWeatherData.feelslk,
+                    weatherIcon: dailyWeatherData.weatherIcon,
                     day: 1,
                   ),
                   WeekPanel(
-                    tem: tem2,
-                    press: press2,
-                    des: des2,
-                    hum: hum2,
-                    feelsLike: feelLike2,
+                    tem: forecastWeatherData1.tem,
+                    press: forecastWeatherData1.press,
+                    des: forecastWeatherData1.des,
+                    hum: forecastWeatherData1.hum,
+                    feelsLike: forecastWeatherData1.feelslk,
+                    weatherIcon: dailyWeatherData.weatherIcon,
                     day: 2,
                   ),
                   WeekPanel(
-                    tem: tem3,
-                    press: press3,
-                    des: des3,
-                    hum: hum3,
-                    feelsLike: feelLike3,
+                    tem: forecastWeatherData2.tem,
+                    press: forecastWeatherData2.press,
+                    des: forecastWeatherData2.des,
+                    hum: forecastWeatherData2.hum,
+                    feelsLike: forecastWeatherData2.feelslk,
+                    weatherIcon: dailyWeatherData.weatherIcon,
                     day: 3,
                   ),
                   WeekPanel(
-                    tem: tem4,
-                    press: press4,
-                    des: des4,
-                    hum: hum4,
-                    feelsLike: feelLike4,
+                    tem: forecastWeatherData3.tem,
+                    press: forecastWeatherData3.press,
+                    des: forecastWeatherData3.des,
+                    hum: forecastWeatherData3.hum,
+                    feelsLike: forecastWeatherData3.feelslk,
+                    weatherIcon: dailyWeatherData.weatherIcon,
                     day: 4,
                   ),
                   WeekPanel(
-                    tem: tem5,
-                    press: press5,
-                    des: des5,
-                    hum: hum5,
-                    feelsLike: feelLike5,
+                    tem: forecastWeatherData4.tem,
+                    press: forecastWeatherData4.press,
+                    des: forecastWeatherData4.des,
+                    hum: forecastWeatherData4.hum,
+                    feelsLike: forecastWeatherData4.feelslk,
+                    weatherIcon: dailyWeatherData.weatherIcon,
                     day: 5,
                   ),
                 ],
               ),
-              // Padding(
-              //   padding: const EdgeInsets.only(right: 15.0),
-              //   child: //Text(DateFormat.E().format(DateTime.now())),
-              //       Text(
-              //     "$weatherMessage in $cityName!",
-              //     textAlign: TextAlign.right,
-              //     style: kMessageTextStyle,
-              //   ),
-              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -334,7 +233,6 @@ class _LocationScreenState extends State<LocationScreen> {
                       var weatherData = await weatherModel.getLocationWeather();
                       var forecastData =
                           await weatherModel.getLocationForecast();
-                      index = 8;
                       updateUI(weatherData, forecastData);
                     },
                     child: const Icon(
@@ -375,52 +273,3 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 }
-
-class WeekPanel extends StatelessWidget {
-  WeekPanel(
-      {this.tem,
-      this.hum,
-      this.press,
-      this.des,
-      this.feelsLike,
-      required this.day});
-  int? tem;
-  int day;
-  int? hum;
-  int? press;
-  String? des;
-  int? feelsLike;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 72,
-      height: 184,
-      child: Card(
-        color: Colors.black.withOpacity(0.4),
-        shadowColor: Colors.black,
-        elevation: 10.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(19),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                '${list![day]}\n\n$weatherIcon\n$tem°/$feelsLike°',
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                '$des\n$hum\n$press',
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-//https://api.openweathermap.org/data/2.5/forecast?q=bhubaneswar&appid=f16b82ad625f888262d97d1cf364340e&units=metric
-//https://openweathermap.org/weather-conditions
